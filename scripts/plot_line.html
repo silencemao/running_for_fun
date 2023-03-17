@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Coordinates Track</title>
+  <style>
+    /* 添加 CSS 样式表 */
+    #map {
+      height: 400px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 创建地图容器标记 -->
+  <div id="map"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script>
+    // 定义经纬度坐标点数组
+    const coordinates = [
+      { latitude: 40.712776, longitude: -74.005974 },
+      { latitude: 34.052235, longitude: -118.243683 },
+      { latitude: 51.507351, longitude: -0.127758 },
+      // 添加更多坐标点...
+    ];
+
+    // 创建地图并设置视图
+    const mymap = L.map('map').setView([38.9072, -77.0369], 6);
+
+    // 添加 OpenStreetMap 地图图层
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+    }).addTo(mymap);
+
+    // 绘制轨迹
+    for (let i = 0; i < coordinates.length - 1; i++) {
+      // 获取相邻的两个坐标点
+      const startPoint = [coordinates[i].latitude, coordinates[i].longitude];
+      const endPoint = [coordinates[i + 1].latitude, coordinates[i + 1].longitude];
+
+      // 绘制线条
+      L.polyline([startPoint, endPoint], {color: 'red'}).addTo(mymap);
+    }
+  </script>
+</body>
+</html>
