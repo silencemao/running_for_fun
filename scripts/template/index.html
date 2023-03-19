@@ -8,14 +8,6 @@
             width: 100%;
             height: 500px;
         }
-<!--        html, body {-->
-<!--            height: 100%;-->
-<!--        }-->
-
-<!--        #map {-->
-<!--            height: 100%;-->
-<!--            width: 100%;-->
-<!--        }-->
     </style>
 </head>
 <body>
@@ -27,12 +19,41 @@
 
     <div id="map"></div>
 
+    <div class="table-container" style="margin-left: 800px;">
+      <table>
+        <thead>
+          <tr>
+            <th style="padding-right: 100px;">里程</th>
+            <th style="padding-right: 100px;">配速</th>
+            <th style="padding-right: 100px;">跑步时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding-right: 20px;">5km</td>
+            <td style="padding-right: 20px;">6:30/km</td>
+            <td>2023-02-11</td>
+          </tr>
+          <tr>
+            <td style="padding-right: 20px;">10km</td>
+            <td style="padding-right: 20px;">6:45/km</td>
+            <td>2023-02-10</td>
+          </tr>
+          <tr>
+            <td style="padding-right: 20px;">21.1km</td>
+            <td style="padding-right: 20px;">7:00/km</td>
+            <td>2023-01-10</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://webapi.amap.com/maps?v=1.4.15&key=xxxx"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=xxx"></script>
     <script>
         $(function() {
             var map = new AMap.Map('map', {
-                zoom: 13
+                zoom: 12
             });
 
             $('#trackList').on('click', 'button', function() {
