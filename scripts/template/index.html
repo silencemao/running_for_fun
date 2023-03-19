@@ -3,43 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>轨迹列表</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://webapi.amap.com/maps?v=1.4.15&key="></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+<!--        html, body {-->
+<!--            height: 100%;-->
+<!--        }-->
+
+<!--        #map {-->
+<!--            height: 100%;-->
+<!--            width: 100%;-->
+<!--        }-->
+    </style>
 </head>
 <body>
-    <ul>
-        <li><button onclick="getTrack(1)">轨迹1</button></li>
-        <li><button onclick="getTrack(2)">轨迹2</button></li>
-        <li><button onclick="getTrack(3)">轨迹3</button></li>
+    <ul id="trackList">
+        <li><button data-track="1">轨迹1</button></li>
+        <li><button data-track="2">轨迹2</button></li>
+        <li><button data-track="3">轨迹3</button></li>
     </ul>
 
-    <div id="map" style="width: 100%; height: 500px;"></div>
+    <div id="map"></div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=xxxx"></script>
     <script>
-        //定义函数获取轨迹数据并渲染地图
-        function getTrack(trackID) {
-            //发送POST请求到后端获取轨迹数据
-            $.post('/get_track', {'track_id': trackID}, function(data) {
-                //初始化地图对象
-                var map = new AMap.Map('map', {
-                    center: [data[0].longitude, data[0].latitude],
-                    zoom: 15
-                });
-
-                //创建轨迹线对象并添加到地图上
-                var polyline = new AMap.Polyline({
-                    path: data.map(function(t) { return [t.longitude, t.latitude]; }),
-                    strokeColor: "#3366FF",
-                    strokeWeight: 6,
-                    strokeOpacity: 1.0
-                });
-
-                polyline.setMap(map);
-
-                //使地图自适应大小
-                map.setFitView();
+        $(function() {
+            var map = new AMap.Map('map', {
+                zoom: 13
             });
-        }
+
+            $('#trackList').on('click', 'button', function() {
+                var trackID = $(this).data('track');
+                $.ajax({
+                    url: '/get_track',
+                    type: 'POST',
+                    data: { track_id: trackID },
+                    dataType: 'json',
+                    success: function(data) {
+                        var path = data.map(function(t) { return [t.longitude, t.latitude]; });
+                        map.clearMap();
+
+                        var polyline = new AMap.Polyline({
+                            path: path,
+                            strokeColor: "#3366FF",
+                            strokeWeight: 6,
+                            strokeOpacity: 1,
+                            strokeStyle: 'solid',
+                            showDir: true
+                        });
+
+                        polyline.setMap(map);
+
+                        map.setFitView(polyline, {
+                            duration: 500  // 过渡时间为 0.5 秒
+                        });
+                    },
+                    error: function(err) {
+                        alert(err.responseText);
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
