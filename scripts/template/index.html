@@ -9,6 +9,7 @@
             height: 500px;
         }
     </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <ul id="trackList">
@@ -20,32 +21,51 @@
     <div id="map"></div>
 
     <div class="table-container" style="margin-left: 800px;">
-      <table>
-        <thead>
-          <tr>
-            <th style="padding-right: 100px;">里程</th>
-            <th style="padding-right: 100px;">配速</th>
-            <th style="padding-right: 100px;">跑步时间</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="padding-right: 20px;">5km</td>
-            <td style="padding-right: 20px;">6:30/km</td>
-            <td>2023-02-11</td>
-          </tr>
-          <tr>
-            <td style="padding-right: 20px;">10km</td>
-            <td style="padding-right: 20px;">6:45/km</td>
-            <td>2023-02-10</td>
-          </tr>
-          <tr>
-            <td style="padding-right: 20px;">21.1km</td>
-            <td style="padding-right: 20px;">7:00/km</td>
-            <td>2023-01-10</td>
-          </tr>
-        </tbody>
-      </table>
+<!--      <table>-->
+<!--        <thead>-->
+<!--          <tr>-->
+<!--            <th style="padding-right: 100px;">里程</th>-->
+<!--            <th style="padding-right: 100px;">配速</th>-->
+<!--            <th style="padding-right: 100px;">跑步时间</th>-->
+<!--          </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--          <tr>-->
+<!--            <td style="padding-right: 20px;">5km</td>-->
+<!--            <td style="padding-right: 20px;">6:30/km</td>-->
+<!--            <td>2023-02-11</td>-->
+<!--          </tr>-->
+<!--          <tr>-->
+<!--            <td style="padding-right: 20px;">10km</td>-->
+<!--            <td style="padding-right: 20px;">6:45/km</td>-->
+<!--            <td>2023-02-10</td>-->
+<!--          </tr>-->
+<!--          <tr>-->
+<!--            <td style="padding-right: 20px;">21.1km</td>-->
+<!--            <td style="padding-right: 20px;">7:00/km</td>-->
+<!--            <td>2023-01-10</td>-->
+<!--          </tr>-->
+<!--        </tbody>-->
+<!--      </table>-->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in table_data %}
+                    <tr data-id="{{ row['id'] }}">
+                        <td>{{ row['id'] }}</td>
+                        <td>{{ row['name'] }}</td>
+                        <td>{{ row['age'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

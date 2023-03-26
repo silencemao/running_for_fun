@@ -7,11 +7,17 @@ CORS(app)
 
 key = 'your_amap_key'
 
+# 模拟表格数据
+table_data = [
+    {'id': 1, 'name': 'John', 'age': 25},
+    {'id': 2, 'name': 'Mary', 'age': 30},
+    {'id': 3, 'name': 'Peter', 'age': 35},
+]
 
 # 定义路由
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', table_data=table_data)
 
 
 @app.route('/api/get_trajectory', methods=['POST'])
