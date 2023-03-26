@@ -5,6 +5,19 @@ document.addEventListener("DOMContentLoaded", function() {
     row.addEventListener("click", onTableRowClick);
   });
 
+//  var myButton = document.getElementById("trackList");
+//  myButton.addEventListener("click", trackVehicle);
+
+ var buttons = document.querySelectorAll("#trackList button");
+
+buttons.forEach(function(button) {
+  button.addEventListener("click", function() {
+    var trackID = button.getAttribute("data-track");
+    trackVehicle(trackID);
+  });
+});
+
+
   var markers = [];
   var polyline;
 //  var locations = {{ locations|tojson }};
@@ -83,9 +96,42 @@ document.addEventListener("DOMContentLoaded", function() {
     xhr.send();
   }
 
-
+function trackVehicle(trackID) {
+  console.log("id= ");
   var map = new AMap.Map('map', {
     zoom: 12
-});
+  });
+
+  var xhr = new XMLHttpRequest();
+  var formData = new FormData();
+  formData.append('track_id', trackID);
+  xhr.open('POST', '/get_track');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      var data = JSON.parse(xhr.responseText);
+      var path = data.map(function(t) {
+        return [t.longitude, t.latitude];
+      });
+      map.clearMap();
+      var polyline = new AMap.Polyline({
+        path: path,
+        strokeColor: "#3366FF",
+        strokeWeight: 6,
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+        showDir: true
+      });
+      polyline.setMap(map);
+      map.setFitView(polyline, {
+        duration: 500 // duration is in milliseconds
+      });
+    } else if (xhr.readyState === 4 && xhr.status !== 200) {
+      alert('Error: ' + xhr.responseText);
+    }
+  };
+  xhr.send(formData);
+};
+
+;
 
 });

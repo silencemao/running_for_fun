@@ -34,6 +34,7 @@ def get_trajectory():
 @app.route('/get_track', methods=['POST'])
 def get_track():
     #从前端获取请求参数
+    print(request.form.to_dict())
     track_id = request.form.get('track_id')
     print(track_id, type(track_id))
 

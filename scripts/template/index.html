@@ -69,45 +69,46 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://webapi.amap.com/maps?v=1.4.15&key=xxx"></script>
-    <script>
-        $(function() {
-            var map = new AMap.Map('map', {
-                zoom: 12
-            });
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=xxxx"></script>
+<!--    <script src="{{ url_for('static', filename='js/main.js') }}"></script>-->
+<!--    <script>-->
+<!--        $(function() {-->
+<!--            var map = new AMap.Map('map', {-->
+<!--                zoom: 12-->
+<!--            });-->
 
-            $('#trackList').on('click', 'button', function() {
-                var trackID = $(this).data('track');
-                $.ajax({
-                    url: '/get_track',
-                    type: 'POST',
-                    data: { track_id: trackID },
-                    dataType: 'json',
-                    success: function(data) {
-                        var path = data.map(function(t) { return [t.longitude, t.latitude]; });
-                        map.clearMap();
+<!--            $('#trackList').on('click', 'button', function() {-->
+<!--                var trackID = $(this).data('track');-->
+<!--                $.ajax({-->
+<!--                    url: '/get_track',-->
+<!--                    type: 'POST',-->
+<!--                    data: { track_id: trackID },-->
+<!--                    dataType: 'json',-->
+<!--                    success: function(data) {-->
+<!--                        var path = data.map(function(t) { return [t.longitude, t.latitude]; });-->
+<!--                        map.clearMap();-->
 
-                        var polyline = new AMap.Polyline({
-                            path: path,
-                            strokeColor: "#3366FF",
-                            strokeWeight: 6,
-                            strokeOpacity: 1,
-                            strokeStyle: 'solid',
-                            showDir: true
-                        });
+<!--                        var polyline = new AMap.Polyline({-->
+<!--                            path: path,-->
+<!--                            strokeColor: "#3366FF",-->
+<!--                            strokeWeight: 6,-->
+<!--                            strokeOpacity: 1,-->
+<!--                            strokeStyle: 'solid',-->
+<!--                            showDir: true-->
+<!--                        });-->
 
-                        polyline.setMap(map);
+<!--                        polyline.setMap(map);-->
 
-                        map.setFitView(polyline, {
-                            duration: 500  // 过渡时间为 0.5 秒
-                        });
-                    },
-                    error: function(err) {
-                        alert(err.responseText);
-                    }
-                });
-            });
-        });
-    </script>
+<!--                        map.setFitView(polyline, {-->
+<!--                            duration: 500  // 过渡时间为 0.5 秒-->
+<!--                        });-->
+<!--                    },-->
+<!--                    error: function(err) {-->
+<!--                        alert(err.responseText);-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
 </body>
 </html>
