@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Map Demo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=f08b8cb868f4bb36ab4ed1b29b798279"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <h1>Map Demo</h1>
+    <div id="map"></div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for location in locations %}
+        <tr data-id="{{ location.id }}">
+          <td>{{ location.id }}</td>
+          <td>{{ location.name }}</td>
+          <td>{{ location.address }}</td>
+          <td>{{ location.phone }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

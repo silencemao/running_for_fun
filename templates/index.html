@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Table and Map Example</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key="></script>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data %}
+                <tr data-id="{{ row['id'] }}">
+                    <td>{{ row['id'] }}</td>
+                    <td>{{ row['name'] }}</td>
+                    <td>{{ row['age'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
