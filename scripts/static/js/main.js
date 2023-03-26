@@ -1,87 +1,51 @@
 document.addEventListener("DOMContentLoaded", function() {
-  var rows = document.querySelectorAll("tbody tr");
-  console.log(rows.length); // 打印表格行数量
-  rows.forEach(function(row) {
-    row.addEventListener("click", onTableRowClick);
-  });
-
-//  var myButton = document.getElementById("trackList");
-//  myButton.addEventListener("click", trackVehicle);
-
- var buttons = document.querySelectorAll("#trackList button");
-
-buttons.forEach(function(button) {
-  button.addEventListener("click", function() {
-    var trackID = button.getAttribute("data-track");
-    trackVehicle(trackID);
-  });
-});
-
-
-  var markers = [];
-  var polyline;
-//  var locations = {{ locations|tojson }};
-//  var locations = JSON.parse('{{ locations|tojson|safe }}');
-  var map = new AMap.Map('map', {
+  // 声明变量使用 const
+  const rows = document.querySelector("tbody");
+  const buttons = document.querySelectorAll("#trackList button");
+  const markers = [];
+  let polyline;
+  const map = new AMap.Map("map", {
     resizeEnable: true,
     zoom: 13,
     center: [116.397428, 39.90923]
   });
-  console.log(map);
 
-
+  // 统一封装添加标记 Marker 和连线 Polyline 的函数，减少代码重复
   function addMarker(location) {
-      console.log('hhhqqq');
-      console.log(location);
-
-    var marker = new AMap.Marker({
+    const marker = new AMap.Marker({
       position: [location.lng, location.lat],
       map: map
     });
-    console.log(marker);
     markers.push(marker);
-    console.log(markers);
   }
 
   function setPolyline(points) {
     if (polyline) {
       polyline.setMap(null);
     }
+
     polyline = new AMap.Polyline({
       path: points,
       isOutline: true,
-      outlineColor: '#ffeeee',
+      outlineColor: "#ffeeee",
       borderWeight: 2,
       strokeWeight: 5,
-      strokeColor: '#0091ff',
-      lineJoin: 'round'
+      strokeColor: "#0091ff",
+      lineJoin: "round"
     });
+
     polyline.setMap(map);
-    console.log(polyline);
     map.setFitView(polyline);
   }
 
-//  function clearMarkers() {
-//  console.log(markers)
-//    markers.forEach(function(marker) {
-//      marker.setMap(null);
-//    });
-//    markers = [];
-//  }
+  // 将代码封装成函数，传入需要的参数
+  function getLocations(url) {
+    const xhr = new XMLHttpRequest();
 
-  function onTableRowClick(event) {
-    console.log('Clicked row:', event.target);
-
-    var row = event.target.closest('tr');
-    var id = row.dataset.id;
-    console.log(row)
-    console.log(id); // 添加此语句
-    var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState === XMLHttpRequest.DONE) {
         if (xhr.status === 200) {
-          var location = JSON.parse(xhr.responseText);
-          console.log(location);
+          const location = JSON.parse(xhr.responseText);
 
           location.forEach(function(loc) {
             addMarker(loc);
@@ -92,46 +56,66 @@ buttons.forEach(function(button) {
         }
       }
     };
-    xhr.open("GET", "/locations/" + id);
+
+    xhr.open("GET", url);
     xhr.send();
   }
 
-function trackVehicle(trackID) {
-  console.log("id= ");
-  var map = new AMap.Map('map', {
-    zoom: 12
+  function getTrack(url, trackID) {
+    const formData = new FormData();
+    formData.append("track_id", trackID);
+    const xhr = new XMLHttpRequest();
+
+    xhr.open("POST", url);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          const path = data.map(function(t) {
+            return [t.longitude, t.latitude];
+          });
+
+          map.clearMap();
+
+          const polyline = new AMap.Polyline({
+            path: path,
+            strokeColor: "#3366FF",
+            strokeWeight: 6,
+            strokeOpacity: 1,
+            strokeStyle: "solid",
+            showDir: true
+          });
+
+          polyline.setMap(map);
+
+          map.setFitView(polyline, { duration: 500 });
+        } else {
+          alert("Error: " + xhr.responseText);
+        }
+      }
+    };
+
+    xhr.send(formData);
+  }
+
+  // 使用事件委托，添加事件监听器
+  rows.addEventListener("click", function(event) {
+    const id = event.target.closest("tr").dataset.id;
+
+    if (id) {
+      getLocations(`/locations/${id}`);
+    }
   });
 
-  var xhr = new XMLHttpRequest();
-  var formData = new FormData();
-  formData.append('track_id', trackID);
-  xhr.open('POST', '/get_track');
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      var data = JSON.parse(xhr.responseText);
-      var path = data.map(function(t) {
-        return [t.longitude, t.latitude];
-      });
-      map.clearMap();
-      var polyline = new AMap.Polyline({
-        path: path,
-        strokeColor: "#3366FF",
-        strokeWeight: 6,
-        strokeOpacity: 1,
-        strokeStyle: 'solid',
-        showDir: true
-      });
-      polyline.setMap(map);
-      map.setFitView(polyline, {
-        duration: 500 // duration is in milliseconds
-      });
-    } else if (xhr.readyState === 4 && xhr.status !== 200) {
-      alert('Error: ' + xhr.responseText);
-    }
-  };
-  xhr.send(formData);
-};
+  buttons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      const trackID = button.getAttribute("data-track");
 
-;
+      if (trackID) {
+        getTrack("/get_track", trackID);
+      }
+    });
+  });
 
 });
