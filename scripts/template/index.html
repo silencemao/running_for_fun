@@ -21,46 +21,22 @@
     <div id="map"></div>
 
     <div class="table-container" style="margin-left: 800px;">
-<!--      <table>-->
-<!--        <thead>-->
-<!--          <tr>-->
-<!--            <th style="padding-right: 100px;">里程</th>-->
-<!--            <th style="padding-right: 100px;">配速</th>-->
-<!--            <th style="padding-right: 100px;">跑步时间</th>-->
-<!--          </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--          <tr>-->
-<!--            <td style="padding-right: 20px;">5km</td>-->
-<!--            <td style="padding-right: 20px;">6:30/km</td>-->
-<!--            <td>2023-02-11</td>-->
-<!--          </tr>-->
-<!--          <tr>-->
-<!--            <td style="padding-right: 20px;">10km</td>-->
-<!--            <td style="padding-right: 20px;">6:45/km</td>-->
-<!--            <td>2023-02-10</td>-->
-<!--          </tr>-->
-<!--          <tr>-->
-<!--            <td style="padding-right: 20px;">21.1km</td>-->
-<!--            <td style="padding-right: 20px;">7:00/km</td>-->
-<!--            <td>2023-01-10</td>-->
-<!--          </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Age</th>
+                    <th>KM</th>
+                    <th>Pace</th>
+                    <th>BPM</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody>
                 {% for row in table_data %}
                     <tr data-id="{{ row['id'] }}">
-                        <td>{{ row['id'] }}</td>
-                        <td>{{ row['name'] }}</td>
-                        <td>{{ row['age'] }}</td>
+                        <td>{{ row['KM'] }}</td>
+                        <td>{{ row['Pace'] }}</td>
+                        <td>{{ row['BPM'] }}</td>
+                        <td>{{ row['Date'] }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -70,45 +46,5 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://webapi.amap.com/maps?v=1.4.15&key=xxxx"></script>
-<!--    <script src="{{ url_for('static', filename='js/main.js') }}"></script>-->
-<!--    <script>-->
-<!--        $(function() {-->
-<!--            var map = new AMap.Map('map', {-->
-<!--                zoom: 12-->
-<!--            });-->
-
-<!--            $('#trackList').on('click', 'button', function() {-->
-<!--                var trackID = $(this).data('track');-->
-<!--                $.ajax({-->
-<!--                    url: '/get_track',-->
-<!--                    type: 'POST',-->
-<!--                    data: { track_id: trackID },-->
-<!--                    dataType: 'json',-->
-<!--                    success: function(data) {-->
-<!--                        var path = data.map(function(t) { return [t.longitude, t.latitude]; });-->
-<!--                        map.clearMap();-->
-
-<!--                        var polyline = new AMap.Polyline({-->
-<!--                            path: path,-->
-<!--                            strokeColor: "#3366FF",-->
-<!--                            strokeWeight: 6,-->
-<!--                            strokeOpacity: 1,-->
-<!--                            strokeStyle: 'solid',-->
-<!--                            showDir: true-->
-<!--                        });-->
-
-<!--                        polyline.setMap(map);-->
-
-<!--                        map.setFitView(polyline, {-->
-<!--                            duration: 500  // 过渡时间为 0.5 秒-->
-<!--                        });-->
-<!--                    },-->
-<!--                    error: function(err) {-->
-<!--                        alert(err.responseText);-->
-<!--                    }-->
-<!--                });-->
-<!--            });-->
-<!--        });-->
-<!--    </script>-->
 </body>
 </html>

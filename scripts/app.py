@@ -1,18 +1,55 @@
+import polyline
 import requests
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, g
 from flask_cors import CORS
 
+import sqlite3
+import pandas as pd
+
 app = Flask(__name__, template_folder='template')
+app.config.update({
+    'DATABASE': './data.db'
+})
+
+
+def get_db():
+    if not hasattr(g, 'db'):
+        g.db = sqlite3.connect(app.config['DATABASE'])
+    return g.db
+
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'db'):
+        g.db.close()
+
 CORS(app)
 
 key = 'your_amap_key'
 
-# 模拟表格数据
-table_data = [
-    {'id': 1, 'name': 'John', 'age': 25},
-    {'id': 2, 'name': 'Mary', 'age': 30},
-    {'id': 3, 'name': 'Peter', 'age': 35},
-]
+con = sqlite3.connect("./data.db")
+data = pd.read_sql_query("select * from activities", con)
+data.sort_values(by=["start_date_local"], inplace=True, ascending=[False])
+
+data["distance"] = round(data["distance"] / 1000, 1)
+
+data["minute"], data["second"] = data["moving_time"].map(lambda x: int(x[14:19].split(":")[0])), data["moving_time"].map(lambda x: int(x[14:19].split(":")[1]))
+data["mt"] = data["minute"] * 60 + data["second"]
+data["Pace"] = (data["mt"] / data["distance"]).astype("int")
+data["minute"], data["second"] = (data["Pace"] // 60).astype("str"), (data["Pace"] % 60).apply(lambda x: '{:0>2d}'.format(x)).astype("str")
+data["Pace"] = data["minute"] + ":" + data["second"]
+
+columns = ["run_id", "distance", "Pace", "average_heartrate", "start_date_local", "summary_polyline"]
+data = data[columns]
+
+columns1 = ["id", "KM", "Pace", "BMP", "Date", "summary"]
+print(data[:3])
+
+data = data[columns]
+data.columns = columns1
+d_records = data.to_dict("records")
+table_data = d_records
+
 
 # 定义路由
 @app.route('/')
@@ -53,5 +90,30 @@ def get_track():
     return jsonify(data)
 
 
+@app.route('/get_track1', methods=['POST'])
+def get_track1():
+    #从前端获取请求参数
+    print(request.form.to_dict())
+    track_id = request.form.get('track_id')
+    print(track_id, type(track_id))
+
+    db = get_db()
+    data = pd.read_sql_query("select * from activities", db)
+    data["run_id"] = data["run_id"].astype("str")
+    print(data[:3])
+    tmp = data[data["run_id"] == track_id]
+    print(tmp)
+    print(tmp["summary_polyline"], type(tmp["summary_polyline"].to_list()[0]))
+
+    tmp_data = polyline.decode(tmp["summary_polyline"].to_list()[0])
+
+    res_data = []
+    for latlng in tmp_data:
+        res_data.append({"longitude": latlng[1], "latitude": latlng[0]})
+    print(res_data)
+    return jsonify(res_data)
+
+
 if __name__ == '__main__':
+    print(table_data)
     app.run(debug=True)

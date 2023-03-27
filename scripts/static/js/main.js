@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   // 声明变量使用 const
-  const rows = document.querySelector("tbody");
+  const rows = document.querySelectorAll("tr");
   const buttons = document.querySelectorAll("#trackList button");
   const markers = [];
   let polyline;
@@ -100,12 +100,23 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // 使用事件委托，添加事件监听器
-  rows.addEventListener("click", function(event) {
-    const id = event.target.closest("tr").dataset.id;
+//  rows.addEventListener("click", function(event) {
+//    const id = event.target.closest("tr").dataset.id;
+//    console.log(id);
+//    if (id) {
+//      getLocations(`/locations/${id}`);
+//    }
+//  });
 
-    if (id) {
-      getLocations(`/locations/${id}`);
-    }
+  rows.forEach(function(row) {
+     row.addEventListener("click", function() {
+        console.log(row);
+        const rowID = row.getAttribute("data-id");
+        console.log(rowID);
+        if (rowID) {
+            getTrack("/get_track1", rowID)
+        }
+     });
   });
 
   buttons.forEach(function(button) {
