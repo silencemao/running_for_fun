@@ -3,49 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>轨迹列表</title>
-    <style>
-        #map {
-            width: 100%;
-            height: 500px;
-        }
-    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
-    <ul id="trackList">
-        <li><button data-track="1">轨迹1</button></li>
-        <li><button data-track="2">轨迹2</button></li>
-        <li><button data-track="3">轨迹3</button></li>
-    </ul>
-
-    <div id="map"></div>
-
-    <div class="table-container" style="margin-left: 800px;">
-        <table>
-            <thead>
-                <tr>
-                    <th>KM</th>
-                    <th>Pace</th>
-                    <th>BPM</th>
-                    <th>TYPE</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in table_data %}
-                    <tr data-id="{{ row['id'] }}" onclick="window.scrollTo(0,0)">
-                        <td>{{ row['KM'] }}</td>
-                        <td>{{ row['Pace'] }}</td>
-                        <td>{{ row['BPM'] }}</td>
-                        <td>{{ row['TYPE'] }}</td>
-                        <td>{{ row['Date'] }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <div id="text-container">
+        <div class="text-block">Text block 1</div>
+        <div class="text-block">Text block 2</div>
+        <div class="text-block">Text block 3</div>
     </div>
 
+    <div class="container">
+        <div id="map"></div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>KM</th>
+                        <th>Pace</th>
+                        <th>BPM</th>
+                        <th>TYPE</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table_data %}
+                        <tr data-id="{{ row['id'] }}" onclick="window.scrollTo(0,0)">
+                            <td>{{ row['KM'] }}</td>
+                            <td>{{ row['Pace'] }}</td>
+                            <td>{{ row['BPM'] }}</td>
+                            <td>{{ row['TYPE'] }}</td>
+                            <td>{{ row['Date'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://webapi.amap.com/maps?v=1.4.15&key=xxxx"></script>
 </body>
