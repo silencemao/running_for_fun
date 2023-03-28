@@ -27,15 +27,17 @@
                     <th>KM</th>
                     <th>Pace</th>
                     <th>BPM</th>
+                    <th>TYPE</th>
                     <th>Date</th>
                 </tr>
             </thead>
             <tbody>
                 {% for row in table_data %}
-                    <tr data-id="{{ row['id'] }}">
+                    <tr data-id="{{ row['id'] }}" onclick="window.scrollTo(0,0)">
                         <td>{{ row['KM'] }}</td>
                         <td>{{ row['Pace'] }}</td>
                         <td>{{ row['BPM'] }}</td>
+                        <td>{{ row['TYPE'] }}</td>
                         <td>{{ row['Date'] }}</td>
                     </tr>
                 {% endfor %}

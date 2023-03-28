@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 import sqlite3
 import pandas as pd
+import numpy as np
 
 app = Flask(__name__, template_folder='template')
 app.config.update({
@@ -31,6 +32,11 @@ con = sqlite3.connect("./data.db")
 data = pd.read_sql_query("select * from activities", con)
 data.sort_values(by=["start_date_local"], inplace=True, ascending=[False])
 
+data["type"] = np.where(data["name"] == "run from gpx", "BIKE", "RUN")
+data["start_date_local"] = np.where(data["name"] == "run from gpx", data["start_date"], data["start_date_local"])
+
+print(data[:3]["start_date_local"].to_list(), data[:3]["start_date"].to_list())
+
 data["distance"] = round(data["distance"] / 1000, 1)
 
 data["minute"], data["second"] = data["moving_time"].map(lambda x: int(x[14:19].split(":")[0])), data["moving_time"].map(lambda x: int(x[14:19].split(":")[1]))
@@ -39,10 +45,10 @@ data["Pace"] = (data["mt"] / data["distance"]).astype("int")
 data["minute"], data["second"] = (data["Pace"] // 60).astype("str"), (data["Pace"] % 60).apply(lambda x: '{:0>2d}'.format(x)).astype("str")
 data["Pace"] = data["minute"] + ":" + data["second"]
 
-columns = ["run_id", "distance", "Pace", "average_heartrate", "start_date_local", "summary_polyline"]
+columns = ["run_id", "distance", "Pace", "average_heartrate", "type", "start_date_local", "summary_polyline"]
 data = data[columns]
 
-columns1 = ["id", "KM", "Pace", "BMP", "Date", "summary"]
+columns1 = ["id", "KM", "Pace", "BMP", "TYPE", "Date", "summary"]
 print(data[:3])
 
 data = data[columns]
