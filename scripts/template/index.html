@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>轨迹列表</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<!--    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">-->
 </head>
 <body>
     <div id="text-container">
@@ -13,35 +13,43 @@
         <div class="text-block">Text block 3</div>
     </div>
 
-    <div class="container">
-        <div id="map"></div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>KM</th>
-                        <th>Pace</th>
-                        <th>BPM</th>
-                        <th>TYPE</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in table_data %}
-                        <tr data-id="{{ row['id'] }}" onclick="window.scrollTo(0,0)">
-                            <td>{{ row['KM'] }}</td>
-                            <td>{{ row['Pace'] }}</td>
-                            <td>{{ row['BPM'] }}</td>
-                            <td>{{ row['TYPE'] }}</td>
-                            <td>{{ row['Date'] }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div id="container">
+        <div id="text">
+            <div class="year">2022 Journey</div>
+            <div class="year">26 Runs</div>
+            <div class="year">100.9 KM</div>
+            <div class="year">5:40 Avg Pace</div>
+            <div class="year">51 day streak</div>
         </div>
 
-
+        <div id="map-table">
+            <div id="map"></div>
+        </div>
     </div>
+    <div id="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>KM</th>
+                            <th>Pace</th>
+                            <th>BPM</th>
+                            <th>TYPE</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in table_data %}
+                            <tr data-id="{{ row['id'] }}" onclick="window.scrollTo(0,0)">
+                                <td>{{ row['KM'] }}</td>
+                                <td>{{ row['Pace'] }}</td>
+                                <td>{{ row['BPM'] }}</td>
+                                <td>{{ row['TYPE'] }}</td>
+                                <td>{{ row['Date'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
