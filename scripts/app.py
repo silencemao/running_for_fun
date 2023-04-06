@@ -12,6 +12,44 @@ app.config.update({
     'DATABASE': './data.db'
 })
 
+CORS(app)
+
+key = 'your_amap_key'
+
+# 设置全局变量
+@app.before_request
+def before_request():
+    con = sqlite3.connect("./data.db")
+    data = pd.read_sql_query("select * from activities", con)
+    data.sort_values(by=["start_date_local"], inplace=True, ascending=[False])
+
+    data["type"] = np.where(data["name"] == "run from gpx", "BIKE", "RUN")
+    data["start_date_local"] = np.where(data["name"] == "run from gpx", data["start_date"], data["start_date_local"])
+
+    print(data[:3]["start_date_local"].to_list(), data[:3]["start_date"].to_list())
+
+    data["distance"] = round(data["distance"] / 1000, 1)
+
+    data["minute"], data["second"] = data["moving_time"].map(lambda x: int(x[14:19].split(":")[0])), data["moving_time"].map(lambda x: int(x[14:19].split(":")[1]))
+    data["mt"] = data["minute"] * 60 + data["second"]
+    data["Pace"] = (data["mt"] / data["distance"]).astype("int")
+    data["minute"], data["second"] = (data["Pace"] // 60).astype("str"), (data["Pace"] % 60).apply(lambda x: '{:0>2d}'.format(x)).astype("str")
+    data["Pace"] = data["minute"] + ":" + data["second"]
+
+    columns = ["run_id", "distance", "Pace", "average_heartrate", "type", "start_date_local", "summary_polyline"]
+    data = data[columns]
+
+    columns1 = ["id", "KM", "Pace", "BMP", "TYPE", "Date", "summary"]
+    print(data[:3])
+
+    data = data[columns]
+    data.columns = columns1
+    d_records = data.to_dict("records")
+    table_data = d_records
+
+    g.data = data
+    g.table_data = table_data
+
 
 def get_db():
     if not hasattr(g, 'db'):
@@ -24,43 +62,22 @@ def close_db(error):
     if hasattr(g, 'db'):
         g.db.close()
 
-CORS(app)
-
-key = 'your_amap_key'
-
-con = sqlite3.connect("./data.db")
-data = pd.read_sql_query("select * from activities", con)
-data.sort_values(by=["start_date_local"], inplace=True, ascending=[False])
-
-data["type"] = np.where(data["name"] == "run from gpx", "BIKE", "RUN")
-data["start_date_local"] = np.where(data["name"] == "run from gpx", data["start_date"], data["start_date_local"])
-
-print(data[:3]["start_date_local"].to_list(), data[:3]["start_date"].to_list())
-
-data["distance"] = round(data["distance"] / 1000, 1)
-
-data["minute"], data["second"] = data["moving_time"].map(lambda x: int(x[14:19].split(":")[0])), data["moving_time"].map(lambda x: int(x[14:19].split(":")[1]))
-data["mt"] = data["minute"] * 60 + data["second"]
-data["Pace"] = (data["mt"] / data["distance"]).astype("int")
-data["minute"], data["second"] = (data["Pace"] // 60).astype("str"), (data["Pace"] % 60).apply(lambda x: '{:0>2d}'.format(x)).astype("str")
-data["Pace"] = data["minute"] + ":" + data["second"]
-
-columns = ["run_id", "distance", "Pace", "average_heartrate", "type", "start_date_local", "summary_polyline"]
-data = data[columns]
-
-columns1 = ["id", "KM", "Pace", "BMP", "TYPE", "Date", "summary"]
-print(data[:3])
-
-data = data[columns]
-data.columns = columns1
-d_records = data.to_dict("records")
-table_data = d_records
-
 
 # 定义路由
 @app.route('/')
 def index():
-    return render_template('index.html', table_data=table_data)
+    data = g.data
+    print(data[:3])
+    print(data.columns)
+    summary_data = dict()
+
+    print(data["Date"].max()[:4])
+    summary_data["year"] = data["Date"].max()[:4]
+    summary_data["runs"] = data[data["Date"] >= summary_data["year"]].shape[0]
+    summary_data["all_km"] = data["KM"].sum()
+    print(summary_data)
+
+    return render_template('index.html', table_data=g.table_data, data=summary_data)
 
 
 @app.route('/api/get_trajectory', methods=['POST'])
@@ -121,5 +138,5 @@ def get_track1():
 
 
 if __name__ == '__main__':
-    print(table_data)
+    # print(g.table_data)
     app.run(debug=True)
