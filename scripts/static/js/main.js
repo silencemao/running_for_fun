@@ -119,6 +119,16 @@ document.addEventListener("DOMContentLoaded", function() {
      });
   });
 
+//    rows.forEach(function(row) {
+//        row.onclick = function() {
+//        if (this.className === "red") {
+//          this.className = "";
+//        } else {
+//          this.className = "red";
+//        }
+//      }
+//    });
+
   buttons.forEach(function(button) {
     button.addEventListener("click", function() {
       const trackID = button.getAttribute("data-track");
