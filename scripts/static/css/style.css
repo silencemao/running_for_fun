@@ -27,10 +27,10 @@ table {
 
 #text {
     width: 350px;
-    height: 500px;
+    height: 1400px;
     /* margin-top: 50px; */
     background-color: black;
-    margin-right: 10px;
+    margin-right: 0px;
 }
 
 #map-table {

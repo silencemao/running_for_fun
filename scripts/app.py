@@ -69,12 +69,22 @@ def index():
     data = g.data
     print(data[:3])
     print(data.columns)
-    summary_data = dict()
 
-    print(data["Date"].max()[:4])
-    summary_data["year"] = data["Date"].max()[:4]
-    summary_data["runs"] = data[data["Date"] >= summary_data["year"]].shape[0]
-    summary_data["all_km"] = data["KM"].sum()
+    data["year"] = data["Date"].apply(lambda x: x[:4])
+    years = sorted(data["year"].unique(), reverse=True)
+    summary_data = []
+    for year in years:
+        tmp = dict()
+        cur_year_data = data[data["year"] == year]
+        tmp["year"] = year
+        tmp["runs"] = cur_year_data[cur_year_data["TYPE"] == "RUN"].shape[0]
+        tmp["run_km"] = round(cur_year_data[cur_year_data["TYPE"] == "RUN"]["KM"].sum(), 2)
+
+        tmp["rides"] = cur_year_data[cur_year_data["TYPE"] == "BIKE"].shape[0]
+        tmp["ride_km"] = round(cur_year_data[cur_year_data["TYPE"] == "BIKE"]["KM"].sum(), 2)
+
+        summary_data.append(tmp)
+
     print(summary_data)
 
     return render_template('index.html', table_data=g.table_data, data=summary_data)
@@ -120,15 +130,14 @@ def get_track1():
     track_id = request.form.get('track_id')
     print(track_id, type(track_id))
 
-    db = get_db()
-    data = pd.read_sql_query("select * from activities", db)
-    data["run_id"] = data["run_id"].astype("str")
+    data = g.data
+    data["id"] = data["id"].astype("str")
     print(data[:3])
-    tmp = data[data["run_id"] == track_id]
+    tmp = data[data["id"] == track_id]
     print(tmp)
-    print(tmp["summary_polyline"], type(tmp["summary_polyline"].to_list()[0]))
+    print(tmp["summary"], type(tmp["summary"].to_list()[0]))
 
-    tmp_data = polyline.decode(tmp["summary_polyline"].to_list()[0])
+    tmp_data = polyline.decode(tmp["summary"].to_list()[0])
 
     res_data = []
     for latlng in tmp_data:
