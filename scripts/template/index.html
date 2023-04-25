@@ -9,7 +9,6 @@
 <body>
 
     <div id="container">
-
         <div id="text">
             {% for row in data %}
                 <div class="year">{{ row['year'] }} Journey</div>
@@ -21,13 +20,24 @@
 
                 <div class="year">5:40 Avg Pace</div>
                 <hr style="color: red;">
-<!--                <br>-->
+                <br>
             {% endfor %}
         </div>
 
         <div id="map-table">
             <div id="map"></div>
+            <div id="year-button">
+                <button id="2023">2023</button>
+                <button id="2022">2022</button>
+                <button id="2021">2021</button>
+                <button id="2020">2020</button>
+                <button id="2019">2019</button>
+            </div>
         </div>
+
+<!--        <div id="map-table">-->
+<!--            <div id="map"></div>-->
+<!--        </div>-->
     </div>
     <div id="table">
         <table>

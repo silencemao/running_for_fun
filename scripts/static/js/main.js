@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
   // 声明变量使用 const
   const rows = document.querySelectorAll("tr");
-  const buttons = document.querySelectorAll("#trackList button");
+//  const buttons = document.querySelectorAll("#year-button");
+  const buttons = document.querySelectorAll("#year-button button");
   const markers = [];
   let polyline;
   const map = new AMap.Map("map", {
@@ -108,6 +109,44 @@ document.addEventListener("DOMContentLoaded", function() {
 //    }
 //  });
 
+  function getYearTrack(url, trackID) {
+    const formData = new FormData();
+    formData.append("year_id", trackID);
+    const xhr = new XMLHttpRequest();
+
+    xhr.open("POST", url);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          const path = data.map(function(t) {
+            return [t.longitude, t.latitude];
+          });
+
+          map.clearMap();
+
+          const polyline = new AMap.Polyline({
+            path: path,
+            strokeColor: "#3366FF",
+            strokeWeight: 6,
+            strokeOpacity: 1,
+            strokeStyle: "solid",
+            showDir: true
+          });
+
+          polyline.setMap(map);
+
+          map.setFitView(polyline, { duration: 500 });
+        } else {
+          alert("Error: " + xhr.responseText);
+        }
+      }
+    };
+
+    xhr.send(formData);
+  }
+
   rows.forEach(function(row) {
      row.addEventListener("click", function() {
         console.log(row);
@@ -119,24 +158,30 @@ document.addEventListener("DOMContentLoaded", function() {
      });
   });
 
-//    rows.forEach(function(row) {
-//        row.onclick = function() {
-//        if (this.className === "red") {
-//          this.className = "";
-//        } else {
-//          this.className = "red";
-//        }
+   buttons.forEach(function(button) {
+      button.addEventListener("click", function(event) { // 添加 event 参数
+        const trackID = event.target.getAttribute("id"); // 使用 event.target 获取按钮元素
+        console.log(trackID);
+
+        if (trackID) {
+            getYearTrack("/get_year_track", trackID);
+            // 移除其他按钮的选中样式
+            buttons.forEach(btn => btn.classList.remove("active"));
+            // 给当前按钮添加选中样式
+            event.target.classList.add("active");
+        }
+      });
+    });
+
+//  buttons.forEach(function(button) {
+//    button.addEventListener("click", function() {
+//      const trackID = button.getAttribute("id");
+//      console.log(trackID);
+//
+//      if (trackID) {
+//        getYearTrack("/get_year_track", trackID);
 //      }
 //    });
-
-  buttons.forEach(function(button) {
-    button.addEventListener("click", function() {
-      const trackID = button.getAttribute("data-track");
-
-      if (trackID) {
-        getTrack("/get_track", trackID);
-      }
-    });
-  });
+//  });
 
 });
