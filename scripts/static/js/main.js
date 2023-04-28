@@ -149,12 +149,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
   rows.forEach(function(row) {
      row.addEventListener("click", function() {
-        console.log(row);
         const rowID = row.getAttribute("data-id");
-        console.log(rowID);
         if (rowID) {
             getTrack("/get_track1", rowID)
         }
+
+      const selected = document.querySelector('table tbody tr.selected');
+      if (selected) {
+        selected.classList.remove('selected');
+      }
+      row.classList.add('selected');
      });
   });
 
@@ -173,15 +177,5 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     });
 
-//  buttons.forEach(function(button) {
-//    button.addEventListener("click", function() {
-//      const trackID = button.getAttribute("id");
-//      console.log(trackID);
-//
-//      if (trackID) {
-//        getYearTrack("/get_year_track", trackID);
-//      }
-//    });
-//  });
 
 });
