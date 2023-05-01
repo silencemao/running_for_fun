@@ -91,6 +91,29 @@ document.addEventListener("DOMContentLoaded", function() {
           polyline.setMap(map);
 
           map.setFitView(polyline, { duration: 500 });
+
+
+//        const startPoint = data[0];
+//        console.log(startPoint);
+//        const startMarker = new AMap.Marker({
+//            position: startPoint,
+//            icon: '../assets/start.svg',
+//            offset: new AMap.Pixel(-13, -30)
+//        });
+//        console.log("start point", startPoint);
+//        startMarker.setMap(map);
+//
+//        const endPoint = data[data.length - 1];
+//        const endMarker = new AMap.Marker({
+//            position: endPoint,
+//            icon: '../../../assets/end.svg',
+//            offset: new AMap.Pixel(-13, -30)
+//        });
+//        endMarker.setMap(map);
+//
+//        const bounds = new AMap.Bounds(data);
+//        map.setBounds(bounds);
+
         } else {
           alert("Error: " + xhr.responseText);
         }

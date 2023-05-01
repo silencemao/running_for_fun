@@ -105,7 +105,8 @@ def get_year_track():
     for line_summary in tmp["summary"].to_list():
         line = polyline.decode(line_summary)
         for latlng in line:
-            res_data.append({"longitude": latlng[1], "latitude": latlng[0]})
+            # res_data.append({"longitude": latlng[1], "latitude": latlng[0]})
+            res_data.append({"longitude": latlng[1] + 0.0062, "latitude": latlng[0] + 0.0013})
 
     return jsonify(res_data)
 
@@ -128,7 +129,7 @@ def get_track1():
 
     res_data = []
     for latlng in tmp_data:
-        res_data.append({"longitude": latlng[1], "latitude": latlng[0]})
+        res_data.append({"longitude": latlng[1]+0.0062, "latitude": latlng[0]+0.0013})
     print(res_data)
     return jsonify(res_data)
 
