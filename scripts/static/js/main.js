@@ -92,9 +92,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
           map.setFitView(polyline, { duration: 500 });
 
-
-//        const startPoint = data[0];
-//        console.log(startPoint);
+        const startPoint = data[0];
+        console.log(startPoint);
+        var marker = new AMap.Marker({
+            position: new AMap.LngLat(startPoint.longitude, startPoint.latitude),   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+            title: '起点',
+            strokeColor: "red",
+        });
+        map.add(marker);
 //        const startMarker = new AMap.Marker({
 //            position: startPoint,
 //            icon: '../assets/start.svg',
@@ -111,8 +116,8 @@ document.addEventListener("DOMContentLoaded", function() {
 //        });
 //        endMarker.setMap(map);
 //
-//        const bounds = new AMap.Bounds(data);
-//        map.setBounds(bounds);
+        const bounds = new AMap.Bounds(data);
+        map.setBounds(bounds);
 
         } else {
           alert("Error: " + xhr.responseText);
