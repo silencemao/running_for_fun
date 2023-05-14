@@ -23,7 +23,7 @@ def before_request():
     data = pd.read_sql_query("select * from activities", con)
     data.sort_values(by=["start_date_local"], inplace=True, ascending=[False])
 
-    data["type"] = np.where(data["name"] == "run from gpx", "BIKE", "RUN")
+    data["type"] = np.where(data["name"] == "run from gpx", "Ride", "Run")
     data["start_date_local"] = np.where(data["name"] == "run from gpx", data["start_date"], data["start_date_local"])
 
     print(data[:3]["start_date_local"].to_list(), data[:3]["start_date"].to_list())
@@ -77,11 +77,11 @@ def index():
         tmp = dict()
         cur_year_data = data[data["year"] == year]
         tmp["year"] = year
-        tmp["runs"] = cur_year_data[cur_year_data["TYPE"] == "RUN"].shape[0]
-        tmp["run_km"] = round(cur_year_data[cur_year_data["TYPE"] == "RUN"]["KM"].sum(), 2)
+        tmp["runs"] = cur_year_data[cur_year_data["TYPE"] == "Run"].shape[0]
+        tmp["run_km"] = round(cur_year_data[cur_year_data["TYPE"] == "Run"]["KM"].sum(), 2)
 
-        tmp["rides"] = cur_year_data[cur_year_data["TYPE"] == "BIKE"].shape[0]
-        tmp["ride_km"] = round(cur_year_data[cur_year_data["TYPE"] == "BIKE"]["KM"].sum(), 2)
+        tmp["rides"] = cur_year_data[cur_year_data["TYPE"] == "Ride"].shape[0]
+        tmp["ride_km"] = round(cur_year_data[cur_year_data["TYPE"] == "Ride"]["KM"].sum(), 2)
 
         summary_data.append(tmp)
 
@@ -105,7 +105,8 @@ def get_year_track():
     for line_summary in tmp["summary"].to_list():
         line = polyline.decode(line_summary)
         for latlng in line:
-            res_data.append({"longitude": latlng[1], "latitude": latlng[0]})
+            # res_data.append({"longitude": latlng[1], "latitude": latlng[0]})
+            res_data.append({"longitude": latlng[1] + 0.0062, "latitude": latlng[0] + 0.0013})
 
     return jsonify(res_data)
 
@@ -128,7 +129,7 @@ def get_track1():
 
     res_data = []
     for latlng in tmp_data:
-        res_data.append({"longitude": latlng[1], "latitude": latlng[0]})
+        res_data.append({"longitude": latlng[1]+0.0062, "latitude": latlng[0]+0.0013})
     print(res_data)
     return jsonify(res_data)
 

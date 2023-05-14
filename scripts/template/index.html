@@ -9,13 +9,14 @@
 <body>
 
     <div id="container">
+
         <div id="text">
             {% for row in data %}
                 <div class="year">{{ row['year'] }} Journey</div>
                 <div class="year">{{ row['runs'] }} Runs</div>
                 <div class="year">{{ row['run_km'] }} KM</div>
 
-                <div class="year">{{ row['rides'] }} Bike</div>
+                <div class="year">{{ row['rides'] }} Rides</div>
                 <div class="year">{{ row['ride_km'] }} KM</div>
 
                 <div class="year">5:40 Avg Pace</div>
@@ -24,44 +25,45 @@
             {% endfor %}
         </div>
 
-        <div id="map-table">
-            <div id="map"></div>
-            <div id="year-button">
-                <button id="2023">2023</button>
-                <button id="2022">2022</button>
-                <button id="2021">2021</button>
-                <button id="2020">2020</button>
-                <button id="2019">2019</button>
+        <div class="wrapper">
+            <div id="map-table">
+                <div id="map"></div>
+                <div id="year-button">
+                    <button id="2023">2023</button>
+                    <button id="2022">2022</button>
+                    <button id="2021">2021</button>
+                    <button id="2020">2020</button>
+                    <button id="2019">2019</button>
+                </div>
             </div>
+
+            <div id="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>KM</th>
+                            <th>Pace</th>
+                            <th>BPM</th>
+                            <th>TYPE</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in table_data %}
+                            <tr data-id="{{ row['id'] }}" onclick="window.scrollTo(0,0)">
+                                <td>{{ row['KM'] }}</td>
+                                <td>{{ row['Pace'] }}</td>
+                                <td>{{ row['BPM'] }}</td>
+                                <td>{{ row['TYPE'] }}</td>
+                                <td>{{ row['Date'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
         </div>
 
-<!--        <div id="map-table">-->
-<!--            <div id="map"></div>-->
-<!--        </div>-->
-    </div>
-    <div id="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>KM</th>
-                    <th>Pace</th>
-                    <th>BPM</th>
-                    <th>TYPE</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in table_data %}
-                    <tr data-id="{{ row['id'] }}" onclick="window.scrollTo(0,0)">
-                        <td>{{ row['KM'] }}</td>
-                        <td>{{ row['Pace'] }}</td>
-                        <td>{{ row['BPM'] }}</td>
-                        <td>{{ row['TYPE'] }}</td>
-                        <td>{{ row['Date'] }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
